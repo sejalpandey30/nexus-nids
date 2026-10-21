@@ -35,6 +35,16 @@ export interface DetectionResult {
   anomaly_score?: number;
   message: string;
   scenario?: string;
+  packet_id?: string;
+  protocol?: string;
+  src_ip?: string;
+  dst_ip?: string;
+  src_port?: number;
+  dst_port?: number;
+  flags?: string[];
+  is_corrupted?: boolean;
+  violation_rule?: string | null;
+  packet_size?: number;
 }
 
 export interface Alert {
@@ -218,3 +228,22 @@ export interface ToastMessage {
   message?: string;
   timestamp: number;
 }
+
+export interface NetworkInterfaceInfo {
+  ip: string;
+  name: string;
+}
+
+export interface LiveSnifferStatus {
+  status: string;
+  is_running: boolean;
+  active_ip: string | null;
+  can_capture: boolean;
+  is_raw?: boolean;
+  mode_label?: string;
+  error_message: string | null;
+  interfaces: NetworkInterfaceInfo[];
+  total_packets: number;
+  total_flows: number;
+}
+

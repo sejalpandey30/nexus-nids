@@ -14,6 +14,7 @@ import type {
   EvaluationResult,
   DatasetValidationResult,
   CustomDatasetEvaluationResult,
+  LiveSnifferStatus,
 } from '../types';
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? '';
@@ -63,6 +64,20 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ scenario, count }),
     });
+  },
+
+  /** GET/POST /api/simulate/packet — fetch single live packet */
+  simulatePacket(scenario?: string): Promise<DetectionResult> {
+    const query = scenario ? `?scenario=${encodeURIComponent(scenario)}` : '';
+    return fetchJSON<DetectionResult>(`/api/simulate/packet${query}`);
+  },
+
+  /** Returns URL for Server-Sent Events real-time packet stream */
+  getPacketStreamUrl(interval: number = 1.0, scenario?: string): string {
+    const params = new URLSearchParams();
+    params.set('interval', interval.toString());
+    if (scenario) params.set('scenario', scenario);
+    return `${BASE_URL}/api/simulate/stream?${params.toString()}`;
   },
 
   /** GET /api/alerts — fetch recent intrusion alerts */
@@ -149,6 +164,34 @@ export const api = {
       method: 'PUT',
       body: JSON.stringify({ triage_status: triageStatus }),
     });
+  },
+
+  /** GET /api/live/status — check raw socket capture capability & available interfaces */
+  getLiveStatus(ip?: string): Promise<LiveSnifferStatus> {
+    const query = ip ? `?ip=${encodeURIComponent(ip)}` : '';
+    return fetchJSON<LiveSnifferStatus>(`/api/live/status${query}`);
+  },
+
+  /** POST /api/live/start — start physical NIC packet sniffing */
+  startLiveCapture(ip?: string): Promise<{ status: string; message: string; active_ip?: string }> {
+    return fetchJSON('/api/live/start', {
+      method: 'POST',
+      body: JSON.stringify({ ip }),
+    });
+  },
+
+  /** POST /api/live/stop — stop physical NIC packet sniffing */
+  stopLiveCapture(): Promise<{ status: string; message: string }> {
+    return fetchJSON('/api/live/stop', {
+      method: 'POST',
+    });
+  },
+
+  /** Returns URL for Server-Sent Events physical NIC stream */
+  getLiveStreamUrl(ip?: string): string {
+    const params = new URLSearchParams();
+    if (ip) params.set('ip', ip);
+    return `${BASE_URL}/api/live/stream?${params.toString()}`;
   },
 };
 

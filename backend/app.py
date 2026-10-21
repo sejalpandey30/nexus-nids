@@ -33,6 +33,7 @@ from backend.routes.training   import training_bp
 from backend.routes.simulation import simulation_bp
 from backend.routes.alerts     import alerts_bp
 from backend.routes.dataset    import dataset_bp
+from backend.routes.live_traffic import live_traffic_bp
 from backend.utils.logger      import setup_logging, get_logger
 from backend.models.model_manager import get_alert_db   # initialises DB at import
 
@@ -54,6 +55,7 @@ def create_app() -> Flask:
     app.register_blueprint(simulation_bp)
     app.register_blueprint(alerts_bp)
     app.register_blueprint(dataset_bp)
+    app.register_blueprint(live_traffic_bp)
 
 
     # Trigger DB initialisation

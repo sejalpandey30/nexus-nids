@@ -252,3 +252,21 @@ class TestDataset:
         assert resp.status_code == 200
         assert resp.get_json()["triage_status"] == "ACKNOWLEDGED"
 
+
+# ── /api/live ────────────────────────────────────────────────────────────────
+class TestLiveTraffic:
+    def test_live_status_returns_200(self, client):
+        resp = client.get("/api/live/status")
+        assert resp.status_code == 200
+        data = resp.get_json()
+        assert "status" in data
+        assert "can_capture" in data
+        assert "interfaces" in data
+        assert isinstance(data["interfaces"], list)
+
+    def test_live_stop_endpoint(self, client):
+        resp = client.post("/api/live/stop")
+        assert resp.status_code == 200
+        assert resp.get_json()["status"] == "stopped"
+
+

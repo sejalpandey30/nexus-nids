@@ -1,24 +1,26 @@
 import { useState } from 'react';
 import { TrafficInspector } from '../components/traffic/TrafficInspector';
 import { SimulationConsole } from '../components/simulation/SimulationConsole';
+import { LivePacketStream } from '../components/traffic/LivePacketStream';
 
-type Tab = 'inspect' | 'simulate';
+type Tab = 'live_stream' | 'inspect' | 'simulate';
 
 export default function TrafficPage() {
-  const [tab, setTab] = useState<Tab>('inspect');
+  const [tab, setTab] = useState<Tab>('live_stream');
 
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-lg font-semibold text-soc-text">Traffic Analysis</h1>
+        <h1 className="text-lg font-semibold text-soc-text">Traffic Analysis & Live Stimulation</h1>
         <p className="text-sm text-soc-text-secondary mt-0.5">
-          Inspect individual flows or run attack simulations
+          Real-time packet stream tracking, rule corruption analysis, flow inspection, and attack simulations
         </p>
       </div>
 
       {/* Tab bar */}
       <div className="flex border-b border-soc-border">
         {([
+          { id: 'live_stream' as Tab, label: 'Live Packet Stream & Rule Integrity' },
           { id: 'inspect' as Tab, label: 'Flow Inspector' },
           { id: 'simulate' as Tab, label: 'Attack Simulation' },
         ] as const).map(({ id, label }) => (
@@ -36,6 +38,7 @@ export default function TrafficPage() {
         ))}
       </div>
 
+      {tab === 'live_stream' && <LivePacketStream />}
       {tab === 'inspect' && <TrafficInspector />}
       {tab === 'simulate' && <SimulationConsole />}
     </div>
